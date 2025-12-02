@@ -1,0 +1,112 @@
+:root {
+  --timeline-bg: #f0f3ff;
+  --timeline-border: rgba(15, 29, 64, 0.08);
+  --timeline-blue: #1f6bff;
+  --timeline-pink: #ff4fb6;
+  --timeline-text: #0f1d40;
+  --timeline-muted: rgba(15, 29, 64, 0.6);
+}
+
+.timeline-block__slider {
+
+  .swiper {
+    width: 100%;
+  }
+}
+
+.timeline-block__nav-group {
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.timeline-block__nav-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 29, 64, 0.1);
+  background: #fff;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: var(--timeline-text);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.timeline-block__nav-button:hover {
+  background: var(--timeline-blue);
+  color: #fff;
+  border-color: var(--timeline-blue);
+}
+
+.timeline-block__slider {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-block__slider-headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.timeline-block__slider-headline h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--timeline-text);
+}
+
+.timeline-block__slider-nav {
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.timeline-block__card {
+  background: var(--timeline-bg);
+  border-radius: 24px;
+  padding: 1.5rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid rgba(15, 29, 64, 0.04);
+}
+
+.timeline-block__card-year {
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  color: var(--timeline-blue);
+  font-weight: 600;
+}
+
+.timeline-block__card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--timeline-text);
+}
+
+.timeline-block__card-text {
+  margin: 0;
+  color: var(--timeline-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .timeline-block {
+    border-radius: 24px;
+    padding: 1.5rem;
+  }
+
+  .timeline-block__years {
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0;
+  }
+
+  .timeline-block__period-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
