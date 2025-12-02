@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './TimelineBlock.scss';
 import type { TimelinePeriod } from '@/data/timelineData';
 import { TimelineBlockSlider} from '@/components/TimelineBlockSlider/TimelineBlockSlider';
+import useHeaderYearsAnimation from '@/hooks/useHeaderYearsAnimation';
+import useMarkerOrbit from '@/hooks/useMarkerOrbit';
+import useYearTweens from '@/hooks/useYearTweens';
 
 type TimelineBlockProps = {
   title: string;
@@ -22,22 +25,19 @@ type OrbitPoint = {
 const formatCounter = (value: number) => value.toString();
 
 const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const blockRef = useRef<HTMLDivElement>(null);
   const orbitTrackRef = useRef<HTMLDivElement>(null);
   const fromYearRef = useRef<HTMLSpanElement>(null);
   const toYearRef = useRef<HTMLSpanElement>(null);
-  const fromYearValueRef = useRef<number>(periods[0]?.startYear ?? 0);
-  const toYearValueRef = useRef<number>(periods[0]?.endYear ?? 0);
-  const isFirstRenderRef = useRef(true);
   const markerSpanRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const markersInitializedRef = useRef(false);
 
+  // Общее количество периодов
   const total = periods.length;
+  // Текущий активный период
   const activePeriod = periods[activeIndex];
-  // index for which the category label is visible (null = hidden)
-  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<number | null>(null);
 
+  /** Вычисление базовых точек орбиты для маркеров */
   const basePoints = useMemo<OrbitPoint[]>(() => {
     const radius = 50;
     const step = (2 * Math.PI) / total;
@@ -58,226 +58,44 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
     });
   }, [periods, total]);
 
-  useEffect(() => {
-    if (!blockRef.current) {
-      return;
-    }
+  /** Анимация года */
+  useHeaderYearsAnimation(blockRef, [activeIndex]);
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.timeline-block__year',
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: 'power3.out',
-          stagger: 0.1
-        }
-      );
-    }, blockRef);
+  /** Анимация маркеров */
+  const { visibleCategoryIndex } = useMarkerOrbit(activeIndex, basePoints, markerSpanRefs, orbitTrackRef);
 
-    return () => ctx.revert();
-  }, [activeIndex]);
-
-  // GSAP анимация для span элементов при смене активного состояния, затем поворот track
-  useEffect(() => {
-    const animations: gsap.core.Tween[] = [];
-
-    // Сначала анимируем span элементы
-    markerSpanRefs.current.forEach((span, index) => {
-      if (!span) return;
-
-      const isActive = index === activeIndex;
-
-      if (isActive) {
-        // Анимация активации: увеличиваем scale до 1, меняем фон на белый
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 1,
-            backgroundColor: '#ffffff',
-            border: 'none'
-          });
-        } else {
-          const tween = gsap.to(span, {
-            scale: 1,
-            backgroundColor: '#ffffff',
-            border: 'none',
-            duration: 0.5,
-            paused: true,
-            ease: 'back.out(1.7)'
-          });
-          animations.push(tween);
-        }
-      } else {
-        // Анимация деактивации: уменьшаем scale до 0.15, меняем фон на #303E58
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 0.15,
-            backgroundColor: '#303E58',
-            borderColor: 'none'
-          });
-        } else {
-          const tween = gsap.to(span, {
-            scale: 0.15,
-            backgroundColor: '#303E58',
-            borderColor: 'none',
-            duration: 0.4,
-            paused: true,
-            ease: 'power2.in'
-          });
-          animations.push(tween);
-        }
-      }
-    });
-
-    // build a GSAP timeline instead of returning a Promise.
-    const buildSequence = (targetIndex: number, opts?: { onComplete?: () => void }) => {
-      // hide the link until the end — we'll set onComplete below
-      const tl = gsap.timeline({ paused: false });
-
-      // rotation helper
-      const rotate = () => {
-        if (!orbitTrackRef.current || !basePoints[targetIndex]) {
-          return;
-        }
-
-        const desiredAngle = -Math.PI / 4; // first quadrant (top-right)
-        const activeAngle = basePoints[targetIndex].angle;
-        const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
-        const rotationValue = `${rotationDelta}deg`;
-
-        if (isFirstRenderRef.current) {
-          // initial render — set immediately
-          gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
-          isFirstRenderRef.current = false;
-        } else {
-          // animate rotation on the timeline
-          tl.to(orbitTrackRef.current, {
-            '--orbit-rotation': rotationValue,
-            duration: 0.4,
-            ease: 'power2.inOut'
-          });
-        }
-      };
-
-      // add span tweens (if any) to the timeline, then rotate
-      if (animations.length > 0) {
-        animations.forEach((t) => tl.add(t));
-      }
-
-      // Add rotation (if not first render it will be added to tl above)
-      rotate();
-
-      // attach onComplete handler for the caller
-      if (typeof opts?.onComplete === 'function') {
-        tl.eventCallback('onComplete', opts!.onComplete);
-      }
-
-      // if there were no tweens added and rotation for the first render used set, then
-      // tl will be empty — call onComplete synchronously so visibility doesn't wait forever.
-      if (tl.duration() === 0) {
-        opts?.onComplete?.();
-      }
-
-      return tl;
-    };
-
-    // Hide the category label while the rotation + span transitions happen.
-    setVisibleCategoryIndex(null);
-
-    let cancelled = false;
-    let tl: gsap.core.Timeline | null = null;
-
-    // Build and run a timeline that: (1) plays span tweens, (2) rotates track, (3) shows label
-    const run = () => {
-      // make the label hidden while sequence runs
-      setVisibleCategoryIndex(null);
-
-      // For first render the builder will set the rotation immediately and call onComplete synchronously
-      markersInitializedRef.current = markersInitializedRef.current || true;
-
-      tl = buildSequence(activeIndex, {
-        onComplete: () => {
-          if (!cancelled) setVisibleCategoryIndex(activeIndex);
-        }
-      });
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-      if (tl) tl.kill();
-    };
-  }, [activeIndex, basePoints]);
-
-  useEffect(() => {
-    const fromEl = fromYearRef.current;
-    const toEl = toYearRef.current;
-    if (!fromEl || !toEl) {
-      return;
-    }
-
-    const getStartValue = (
-      el: HTMLSpanElement,
-      fallback: number,
-      ref: React.MutableRefObject<number>
-    ) => {
-      if (typeof ref.current === 'number') {
-        return ref.current;
-      }
-      const parsed = Number(el.textContent);
-      return Number.isNaN(parsed) ? fallback : parsed;
-    };
-
-    const fromState = {
-      value: getStartValue(fromEl, activePeriod.startYear, fromYearValueRef)
-    };
-    const toState = {
-      value: getStartValue(toEl, activePeriod.endYear, toYearValueRef)
-    };
-
-    const syncFrom = () => {
-      fromYearValueRef.current = fromState.value;
-      fromEl.textContent = Math.round(fromState.value).toString();
-    };
-
-    const syncTo = () => {
-      toYearValueRef.current = toState.value;
-      toEl.textContent = Math.round(toState.value).toString();
-    };
-
-    const fromTween = gsap.to(fromState, {
-      value: activePeriod.startYear,
-      duration: 0.9,
-      ease: 'power2.out',
-      onUpdate: syncFrom
-    });
-
-    const toTween = gsap.to(toState, {
-      value: activePeriod.endYear,
-      duration: 0.9,
-      ease: 'power2.out',
-      onUpdate: syncTo
-    });
-
-    return () => {
-      fromTween.kill();
-      toTween.kill();
-    };
-  }, [activePeriod.startYear, activePeriod.endYear]);
+  const YearTweens = {
+    fromYearRef,
+    toYearRef,
+    startYear: activePeriod.startYear,
+    endYear: activePeriod.endYear
+  };
+  /** Анимация смены года */
+  useYearTweens(YearTweens);
 
 
-  const handlePrevPeriod = () => {
+/**
+ * Увеличивает предыдущий годовой период.
+ */
+  const handlePrevPeriod = (): void => {
     setActiveIndex((prev) => (prev - 1 + total) % total);
   };
 
-  const handleNextPeriod = () => {
+/**
+ * Хандлер увеличивает следующ годовой период.
+ */
+  const handleNextPeriod = (): void => {
     setActiveIndex((prev) => (prev + 1) % total);
   };
 
-  const handleMarkerHover = (index: number, isHovering: boolean) => {
+/**
+ * Хандлер анимации наведения курсора на маркер.
+ *
+ * @param {number} index - Индекс маркера.
+ * @param {boolean} isHovering - Флаг наведения курсора.
+ * @returns {void}
+ */
+  const handleMarkerHover = (index: number, isHovering: boolean): void => {
     const span = markerSpanRefs.current[index];
     if (!span || index === activeIndex) return;
 
