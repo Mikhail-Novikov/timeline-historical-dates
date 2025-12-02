@@ -104,6 +104,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
             backgroundColor: '#ffffff',
             border: 'none',
             duration: 0.5,
+            paused: true,
             ease: 'back.out(1.7)'
           });
           animations.push(tween);
@@ -122,6 +123,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
             backgroundColor: '#303E58',
             borderColor: 'none',
             duration: 0.4,
+            paused: true,
             ease: 'power2.in'
           });
           animations.push(tween);
@@ -129,67 +131,84 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
       }
     });
 
-    const rotateTrack = (): Promise<void> => {
-      return new Promise((resolve) => {
-      if (!orbitTrackRef.current || !basePoints[activeIndex]) {
-        // если орбитальная дорожка не готова, сразу резолвим
-        resolve();
-        return;
-      }
+    // build a GSAP timeline instead of returning a Promise.
+    const buildSequence = (targetIndex: number, opts?: { onComplete?: () => void }) => {
+      // hide the link until the end — we'll set onComplete below
+      const tl = gsap.timeline({ paused: false });
 
-      const desiredAngle = -Math.PI / 4; // первая четверть (правый верх)
-      const activeAngle = basePoints[activeIndex].angle;
-      const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
-      const rotationValue = `${rotationDelta}deg`;
+      // rotation helper
+      const rotate = () => {
+        if (!orbitTrackRef.current || !basePoints[targetIndex]) {
+          return;
+        }
+
+        const desiredAngle = -Math.PI / 4; // first quadrant (top-right)
+        const activeAngle = basePoints[targetIndex].angle;
+        const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
+        const rotationValue = `${rotationDelta}deg`;
 
         if (isFirstRenderRef.current) {
-          // immediate set for the first render, treat as a completed rotation
+          // initial render — set immediately
           gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
           isFirstRenderRef.current = false;
-          // next frame -> resolve so caller can show label after DOM settles
-          requestAnimationFrame(() => resolve());
         } else {
-          gsap.to(orbitTrackRef.current, {
+          // animate rotation on the timeline
+          tl.to(orbitTrackRef.current, {
             '--orbit-rotation': rotationValue,
             duration: 0.4,
-            ease: 'power2.inOut',
-            onComplete: () => resolve()
+            ease: 'power2.inOut'
           });
         }
-      });
+      };
+
+      // add span tweens (if any) to the timeline, then rotate
+      if (animations.length > 0) {
+        animations.forEach((t) => tl.add(t));
+      }
+
+      // Add rotation (if not first render it will be added to tl above)
+      rotate();
+
+      // attach onComplete handler for the caller
+      if (typeof opts?.onComplete === 'function') {
+        tl.eventCallback('onComplete', opts!.onComplete);
+      }
+
+      // if there were no tweens added and rotation for the first render used set, then
+      // tl will be empty — call onComplete synchronously so visibility doesn't wait forever.
+      if (tl.duration() === 0) {
+        opts?.onComplete?.();
+      }
+
+      return tl;
     };
 
     // Hide the category label while the rotation + span transitions happen.
     setVisibleCategoryIndex(null);
 
     let cancelled = false;
+    let tl: gsap.core.Timeline | null = null;
 
-    const run = async () => {
-      if (!markersInitializedRef.current) {
-        markersInitializedRef.current = true;
-        // first render: rotate then show
-        await rotateTrack();
-        if (!cancelled) setVisibleCategoryIndex(activeIndex);
-        return;
-      }
+    // Build and run a timeline that: (1) plays span tweens, (2) rotates track, (3) shows label
+    const run = () => {
+      // make the label hidden while sequence runs
+      setVisibleCategoryIndex(null);
 
-      if (animations.length > 0) {
-        // wait for all span animations to finish
-        await Promise.all(
-          animations.map((tween) => new Promise<void>((resolve) => {
-            tween.eventCallback('onComplete', () => resolve());
-          }))
-        );
-      }
+      // For first render the builder will set the rotation immediately and call onComplete synchronously
+      markersInitializedRef.current = markersInitializedRef.current || true;
 
-      // rotate track and only show category after rotation completes
-      await rotateTrack();
-      if (!cancelled) setVisibleCategoryIndex(activeIndex);
+      tl = buildSequence(activeIndex, {
+        onComplete: () => {
+          if (!cancelled) setVisibleCategoryIndex(activeIndex);
+        }
+      });
     };
 
     run();
+
     return () => {
       cancelled = true;
+      if (tl) tl.kill();
     };
   }, [activeIndex, basePoints]);
 
