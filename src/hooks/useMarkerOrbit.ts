@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
+import { MARKER_ANIMATION_DURATION, MARKER_SCALE_COEFFICIENT } from '@/constants/';
+
 type OrbitPoint = { angle: number };
 
 /**
@@ -43,7 +45,7 @@ export const useMarkerOrbit = (
             scale: 1,
             backgroundColor: '#ffffff',
             border: 'none',
-            duration: 0.5,
+            duration: MARKER_ANIMATION_DURATION,
             paused: true,
             ease: 'back.out(1.7)'
           });
@@ -53,17 +55,17 @@ export const useMarkerOrbit = (
       } else {
         if (!markersInitializedRef.current) {
           gsap.set(span, {
-            scale: 0.15,
+            scale: MARKER_SCALE_COEFFICIENT,
             backgroundColor: '#303E58',
             borderColor: 'none'
           });
         } else {
           // анимируем неактивный маркер
           const tween = gsap.to(span, {
-            scale: 0.15,
+            scale: MARKER_SCALE_COEFFICIENT,
             backgroundColor: '#303E58',
             borderColor: 'none',
-            duration: 0.4,
+            duration: MARKER_ANIMATION_DURATION,
             paused: true,
             ease: 'power2.in'
           });

@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
+import { YEAR_ANIMATION_DURATION } from '@/constants/';
+
 // Пропсы хука useYearTweens
 interface YearTweensProps {
   // рефы на элементы годов от
@@ -64,7 +66,7 @@ export const useYearTweens = (
     // Анимация fromYear
     const fromTween = gsap.to(fromState, {
       value: startYear,
-      duration: 0.9,
+      duration: YEAR_ANIMATION_DURATION,
       ease: 'power2.out',
       onUpdate: syncFrom
     });
@@ -72,7 +74,7 @@ export const useYearTweens = (
     // Анимация toYear
     const toTween = gsap.to(toState, {
       value: endYear,
-      duration: 0.9,
+      duration: YEAR_ANIMATION_DURATION,
       ease: 'power2.out',
       onUpdate: syncTo
     });

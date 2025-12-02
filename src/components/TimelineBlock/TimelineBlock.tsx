@@ -3,11 +3,13 @@ import { gsap } from 'gsap';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './TimelineBlock.scss';
+
 import type { TimelinePeriod } from '@/data/timelineData';
 import { TimelineBlockSlider} from '@/components/TimelineBlockSlider/TimelineBlockSlider';
 import useHeaderYearsAnimation from '@/hooks/useHeaderYearsAnimation';
 import useMarkerOrbit from '@/hooks/useMarkerOrbit';
 import useYearTweens from '@/hooks/useYearTweens';
+import { MARKER_SCALE_COEFFICIENT } from '@/constants/';
 
 type TimelineBlockProps = {
   title: string;
@@ -110,7 +112,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
     } else {
       // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
       gsap.to(span, {
-        scale: 0.15,
+        scale: MARKER_SCALE_COEFFICIENT,
         backgroundColor: '#303E58',
         duration: .4,
         ease: 'power1.in'

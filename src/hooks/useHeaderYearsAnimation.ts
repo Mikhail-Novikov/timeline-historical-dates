@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
 
+import { HEADER_ANIMATION_DURATION } from '@/constants/';
+
 /**
  * Хук анимирует непрозрачность и положение y элементов .timeline-block__year
  * @param blockRef - ref компонента.
@@ -18,7 +20,7 @@ const useHeaderYearsAnimation = (blockRef: React.RefObject<HTMLElement>, deps: n
         {
           opacity: 1,
           y: 0,
-          duration: 0.5,
+          duration: HEADER_ANIMATION_DURATION,
           ease: 'power3.out',
           stagger: 0.1
         }
