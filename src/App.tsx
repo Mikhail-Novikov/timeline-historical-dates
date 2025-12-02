@@ -5,7 +5,10 @@ import { timelineData } from './data/timelineData';
 const App: React.FC = () => {
   return (
     <main className="app-shell">
-      <TimelineBlock title="Исторические даты" periods={timelineData} />
+      <header className="timeline-block__header">
+        <h1 className="timeline-block__title">Исторические<br />даты</h1>
+      </header>
+      <TimelineBlock periods={timelineData} title={''} />
     </main>
   );
 };

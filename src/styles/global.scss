@@ -7,16 +7,14 @@
 }
 
 :root {
-  --filling: #f4f5f9;
   --timeline-white: #ffffff;
+  --filling: #f4f5f9;
   --timeline-bg: #f0f3ff;
-  --timeline-orbit: rgb(66, 86, 122, 0.2);
-  --timeline-marker: rgba(48, 62, 88, 0.5);
+  --timeline-orbit: rgb(66, 86, 122, .2);
+  --timeline-marker: rgba(48, 62, 88, .5);
   --timeline-border: rgba(66, 86, 122, .1);
   --black-blue: #42567A;
   --timeline-pink: #ff4fb6;
-  --timeline-text: #0f1d40;
-  --timeline-muted: #42567a;
 }
 
 *,
@@ -39,6 +37,7 @@ body {
   padding-left: 320px;
   padding-right: 160px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 }

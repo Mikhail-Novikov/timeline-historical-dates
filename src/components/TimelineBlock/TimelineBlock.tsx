@@ -26,7 +26,7 @@ type OrbitPoint = {
 
 const formatCounter = (value: number) => value.toString();
 
-const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
+const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const blockRef = useRef<HTMLDivElement>(null);
   const orbitTrackRef = useRef<HTMLDivElement>(null);
@@ -121,10 +121,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
   };
 
   return (
-    <section className="timeline-block" ref={blockRef} aria-label={title}>
-      <header className="timeline-block__header">
-        <h1 className="timeline-block__title">{title}</h1>
-      </header>
+    <section className="timeline-block" ref={blockRef}>
 
       <div className="timeline-block__orbit">
         <div className="timeline-block__years">

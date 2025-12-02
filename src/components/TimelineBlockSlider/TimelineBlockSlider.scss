@@ -3,8 +3,8 @@
   --timeline-border: rgba(15, 29, 64, 0.08);
   --timeline-blue: #1f6bff;
   --timeline-pink: #ff4fb6;
-  --timeline-text: #0f1d40;
-  --timeline-muted: rgba(15, 29, 64, 0.6);
+  --black-blue: #0f1d40;
+  --black-blue: rgba(15, 29, 64, 0.6);
 }
 
 .timeline-block__slider {
@@ -16,7 +16,6 @@
     width: 100%;
     height: 150px;
   }
-
 
   .timeline-block__slider-nav {
     position: absolute;
@@ -34,7 +33,7 @@
     h2 {
       margin: 0;
       font-size: 1.25rem;
-      color: var(--timeline-text);
+      color: var(--black-blue);
     }
   }
 
@@ -55,12 +54,12 @@
     &-title {
       margin: 0;
       font-size: 1.1rem;
-      color: var(--timeline-text);
+      color: var(--black-blue);
     }
 
     &-text {
       margin: 0;
-      color: var(--timeline-muted);
+      color: var(--black-blue);
       line-height: 1.5;
       display: -webkit-box;
       -webkit-box-orient: vertical;
