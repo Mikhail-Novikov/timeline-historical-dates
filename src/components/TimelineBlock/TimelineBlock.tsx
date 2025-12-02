@@ -19,7 +19,7 @@ type OrbitPoint = {
   angle: number;
 };
 
-const formatCounter = (value: number) => value.toString().padStart(2, '0');
+const formatCounter = (value: number) => value.toString();
 
 const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -112,13 +112,13 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
           gsap.set(span, {
             scale: 0.15,
             backgroundColor: '#303E58',
-            border: 'none'
+            borderColor: 'none'
           });
         } else {
           const tween = gsap.to(span, {
             scale: 0.15,
             backgroundColor: '#303E58',
-            border: 'none',
+            borderColor: 'none',
             duration: 0.4,
             ease: 'power2.in'
           });
@@ -242,7 +242,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
       gsap.to(span, {
         scale: 1,
         backgroundColor: '#ffffff',
-        border: '1px solid #303E58',
         duration: .4,
         ease: 'power1.in'
       });
@@ -251,7 +250,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
       gsap.to(span, {
         scale: 0.15,
         backgroundColor: '#303E58',
-        border: 'none',
         duration: .4,
         ease: 'power1.in'
       });
