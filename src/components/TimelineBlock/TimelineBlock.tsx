@@ -179,8 +179,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
             </button>
           ))}
         </div>
-        <div className="timeline-block__orbit-axis timeline-block__orbit-axis--horizontal" />
-        <div className="timeline-block__orbit-axis timeline-block__orbit-axis--vertical" />
       </div>
       
       <div className="timeline-block__period-controls">

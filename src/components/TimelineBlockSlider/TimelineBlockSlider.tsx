@@ -99,8 +99,7 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({ active
           {activePeriod.events.map((event) => (
             <SwiperSlide key={`${activePeriod.id}-${event.year}-${event.title}`}>
               <article className="timeline-block__card">
-                <span className="timeline-block__card-year">{event.year}</span>
-                <h3 className="timeline-block__card-title">{event.title}</h3>
+                <data className="timeline-block__card-year">{event.year}</data>
                 <p className="timeline-block__card-text">
                   {event.description}
                 </p>
