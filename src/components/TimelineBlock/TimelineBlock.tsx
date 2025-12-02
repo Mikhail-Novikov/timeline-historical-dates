@@ -35,6 +35,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
 
   const total = periods.length;
   const activePeriod = periods[activeIndex];
+  // index for which the category label is visible (null = hidden)
+  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<number | null>(null);
 
   const basePoints = useMemo<OrbitPoint[]>(() => {
     const radius = 50;
@@ -127,8 +129,11 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
       }
     });
 
-    const rotateTrack = () => {
+    const rotateTrack = (): Promise<void> => {
+      return new Promise((resolve) => {
       if (!orbitTrackRef.current || !basePoints[activeIndex]) {
+        // если орбитальная дорожка не готова, сразу резолвим
+        resolve();
         return;
       }
 
@@ -137,35 +142,55 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
       const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
       const rotationValue = `${rotationDelta}deg`;
 
-      if (isFirstRenderRef.current) {
-        gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
-        isFirstRenderRef.current = false;
-      } else {
-        gsap.to(orbitTrackRef.current, {
-          '--orbit-rotation': rotationValue,
-          duration: 0.4,
-          ease: 'power2.inOut'
-        });
-      }
+        if (isFirstRenderRef.current) {
+          // immediate set for the first render, treat as a completed rotation
+          gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
+          isFirstRenderRef.current = false;
+          // next frame -> resolve so caller can show label after DOM settles
+          requestAnimationFrame(() => resolve());
+        } else {
+          gsap.to(orbitTrackRef.current, {
+            '--orbit-rotation': rotationValue,
+            duration: 0.4,
+            ease: 'power2.inOut',
+            onComplete: () => resolve()
+          });
+        }
+      });
     };
 
-    if (!markersInitializedRef.current) {
-      markersInitializedRef.current = true;
-      // При первом рендере поворачиваем track сразу
-      rotateTrack();
-    } else if (animations.length > 0) {
-      // Ждём завершения всех анимаций span, затем поворачиваем track
-      Promise.all(
-        animations.map((tween) => new Promise<void>((resolve) => {
-          tween.eventCallback('onComplete', () => resolve());
-        }))
-      ).then(() => {
-        rotateTrack();
-      });
-    } else {
-      // Если нет анимаций, поворачиваем сразу
-      rotateTrack();
-    }
+    // Hide the category label while the rotation + span transitions happen.
+    setVisibleCategoryIndex(null);
+
+    let cancelled = false;
+
+    const run = async () => {
+      if (!markersInitializedRef.current) {
+        markersInitializedRef.current = true;
+        // first render: rotate then show
+        await rotateTrack();
+        if (!cancelled) setVisibleCategoryIndex(activeIndex);
+        return;
+      }
+
+      if (animations.length > 0) {
+        // wait for all span animations to finish
+        await Promise.all(
+          animations.map((tween) => new Promise<void>((resolve) => {
+            tween.eventCallback('onComplete', () => resolve());
+          }))
+        );
+      }
+
+      // rotate track and only show category after rotation completes
+      await rotateTrack();
+      if (!cancelled) setVisibleCategoryIndex(activeIndex);
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
   }, [activeIndex, basePoints]);
 
   useEffect(() => {
@@ -267,9 +292,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
           <span className="timeline-block__badge-index">
             {formatCounter(activeIndex + 1)}
           </span>
-          <span className="timeline-block__badge-text">
-            {activePeriod.category}
-          </span>
         </div>
       </header>
 
@@ -305,13 +327,24 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
               onClick={() => setActiveIndex(index)}
               aria-label={`Перейти к отрезку ${point.label}`}
             >
-              <span
-                ref={(el) => {
-                  markerSpanRefs.current[index] = el;
-                }}
-              >
-                {point.label}
-              </span>
+                <span
+                  ref={(el) => {
+                    markerSpanRefs.current[index] = el;
+                  }}
+                >
+                  {point.label}
+                </span>
+                {index === activeIndex && (
+                  <span
+                    className={
+                      'timeline-block__marker-category ' +
+                      (visibleCategoryIndex === index ? 'is-visible' : '')
+                    }
+                    aria-hidden
+                  >
+                    {activePeriod.category}
+                  </span>
+                )}
             </button>
           ))}
         </div>

@@ -178,6 +178,29 @@
   }
 }
 
+.timeline-block__marker-category {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px) scale(.98);
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(15, 29, 64, 0.12);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--timeline-text);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.28s cubic-bezier(.2,.8,.2,1), transform 0.28s cubic-bezier(.2,.8,.2,1);
+}
+
+.timeline-block__marker-category.is-visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(12px) scale(1);
+}
+
 .timeline-block__period-controls {
   display: flex;
   justify-content: space-between;
