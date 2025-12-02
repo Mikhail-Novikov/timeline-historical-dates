@@ -121,15 +121,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, periods }) => {
   return (
     <section className="timeline-block" ref={blockRef} aria-label={title}>
       <header className="timeline-block__header">
-        <div>
-          <p className="timeline-block__eyebrow">Временная шкала</p>
-          <h1 className="timeline-block__title">{title}</h1>
-        </div>
-        <div className="timeline-block__badge">
-          <span className="timeline-block__badge-index">
-            {formatCounter(activeIndex + 1)}
-          </span>
-        </div>
+        <h1 className="timeline-block__title">{title}</h1>
       </header>
 
       <div className="timeline-block__orbit">
