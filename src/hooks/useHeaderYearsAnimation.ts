@@ -16,13 +16,11 @@ const useHeaderYearsAnimation = (blockRef: React.RefObject<HTMLElement>, deps: n
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.timeline-block__year',
-        { opacity: 0, y: 20 },
+        { opacity: 0 },
         {
           opacity: 1,
-          y: 0,
           duration: HEADER_ANIMATION_DURATION,
           ease: 'power3.out',
-          stagger: 0.1
         }
       );
     }, blockRef);
