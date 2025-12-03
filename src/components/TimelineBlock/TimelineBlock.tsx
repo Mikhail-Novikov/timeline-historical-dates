@@ -9,7 +9,7 @@ import { TimelineBlockSlider } from "@/components/TimelineBlockSlider/TimelineBl
 import useHeaderYearsAnimation from "@/hooks/useHeaderYearsAnimation";
 import useMarkerOrbit from "@/hooks/useMarkerOrbit";
 import useYearTweens from "@/hooks/useYearTweens";
-import { MARKER_SCALE_COEFFICIENT } from "@/constants/";
+import { MARKER_ANIMATION_DURATION, MARKER_SCALE_COEFFICIENT } from "@/constants/";
 
 type TimelineBlockProps = {
   title: string;
@@ -110,15 +110,15 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
       gsap.to(span, {
         scale: 1,
         backgroundColor: "#ffffff",
-        duration: 0.4,
+        duration: MARKER_ANIMATION_DURATION,
         ease: "power1.in",
       });
     } else {
-      // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
+      // При уходе: возвращаем к scale(0.105), фон обратно на #303E58
       gsap.to(span, {
         scale: MARKER_SCALE_COEFFICIENT,
         backgroundColor: "#303E58",
-        duration: 0.4,
+        duration: MARKER_ANIMATION_DURATION,
         ease: "power1.in",
       });
     }

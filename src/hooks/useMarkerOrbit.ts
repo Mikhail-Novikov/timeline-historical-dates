@@ -53,6 +53,7 @@ export const useMarkerOrbit = (
           animations.push(tween);
         }
       } else {
+        // если это неактивный маркер
         if (!markersInitializedRef.current) {
           gsap.set(span, {
             scale: MARKER_SCALE_COEFFICIENT,
@@ -102,7 +103,7 @@ export const useMarkerOrbit = (
           // иначе анимируем поворот орбиты
           tl.to(orbitTrackRef.current, {
             '--orbit-rotation': rotationValue,
-            duration: 0.4,
+            duration: MARKER_ANIMATION_DURATION,
             ease: 'power2.inOut'
           });
         }
