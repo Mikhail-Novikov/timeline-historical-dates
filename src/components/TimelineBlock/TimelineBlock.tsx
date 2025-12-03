@@ -6,10 +6,10 @@ import "./TimelineBlock.scss";
 
 import type { TimelinePeriod } from "@/data/timelineData";
 import { TimelineBlockSlider } from "@/components/TimelineBlockSlider/TimelineBlockSlider";
-import useHeaderYearsAnimation from "@/hooks/useHeaderYearsAnimation";
-import useMarkerOrbit from "@/hooks/useMarkerOrbit";
+
 import useYearTweens from "@/hooks/useYearTweens";
 import { MARKER_ANIMATION_DURATION, MARKER_SCALE_COEFFICIENT } from "@/constants/";
+import useMarkerOrbit from "@/hooks/useMarkerOrbit";
 
 type TimelineBlockProps = {
   title: string;
@@ -32,8 +32,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   const orbitTrackRef = useRef<HTMLDivElement>(null);
   const fromYearRef = useRef<HTMLSpanElement>(null);
   const toYearRef = useRef<HTMLSpanElement>(null);
-  const fromYearValueRef = useRef<number>(periods[0]?.startYear ?? 0);
-  const toYearValueRef = useRef<number>(periods[0]?.endYear ?? 0);
   const isFirstRenderRef = useRef(true);
   const markerSpanRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const markersInitializedRef = useRef(false);
@@ -61,130 +59,20 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     });
   }, [periods, total]);
 
-  // GSAP анимация для span элементов при смене активного состояния
-  useEffect(() => {
-    // Сначала анимируем span элементы
-    markerSpanRefs.current.forEach((span, index) => {
-      if (!span) return;
+  useMarkerOrbit(
+    activeIndex,
+    basePoints,
+    orbitTrackRef,
+    markerSpanRefs
+  );
 
-      const isActive = index === activeIndex;
-
-      if (isActive) {
-        // Анимация активации: увеличиваем scale до 1, меняем фон на белый
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 1,
-            backgroundColor: '#ffffff',
-            border: 'none'
-          });
-        } else {
-          gsap.to(span, {
-            scale: 1,
-            backgroundColor: '#ffffff',
-            border: 'none',
-            duration: 0.6,
-            ease: 'back.out(1.7)'
-          });
-        }
-      } else {
-        // Анимация деактивации: уменьшаем scale до 0.15, меняем фон на #303E58
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 0.15,
-            backgroundColor: '#303E58',
-            border: 'none'
-          });
-        } else {
-          gsap.to(span, {
-            scale: 0.15,
-            backgroundColor: '#303E58',
-            border: 'none',
-            duration: 0.6,
-            ease: 'power2.in'
-          });
-        }
-      }
-    });
-
-    // Вращаем орбиту параллельно с анимациями маркеров
-    if (!orbitTrackRef.current || !basePoints[activeIndex]) {
-      return;
-    }
-
-    const desiredAngle = -Math.PI / 4; // первая четверть (правый верх)
-    const activeAngle = basePoints[activeIndex].angle;
-    const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
-    const rotationValue = `${rotationDelta}deg`;
-
-    if (isFirstRenderRef.current) {
-      gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
-      isFirstRenderRef.current = false;
-      markersInitializedRef.current = true;
-    } else {
-      gsap.to(orbitTrackRef.current, {
-        '--orbit-rotation': rotationValue,
-        duration: 1.5,
-        ease: 'power2.inOut'
-      });
-    }
-  }, [activeIndex, basePoints]);
-
-  // Синхронизация span элементов годов с активным периодом
-  useEffect(() => {
-    const fromEl = fromYearRef.current;
-    const toEl = toYearRef.current;
-    if (!fromEl || !toEl) {
-      return;
-    }
-
-    const getStartValue = (
-      el: HTMLSpanElement,
-      fallback: number,
-      ref: React.MutableRefObject<number>
-    ) => {
-      if (typeof ref.current === 'number') {
-        return ref.current;
-      }
-      const parsed = Number(el.textContent);
-      return Number.isNaN(parsed) ? fallback : parsed;
-    };
-
-    const fromState = {
-      value: getStartValue(fromEl, activePeriod.startYear, fromYearValueRef)
-    };
-    const toState = {
-      value: getStartValue(toEl, activePeriod.endYear, toYearValueRef)
-    };
-
-    const syncFrom = () => {
-      fromYearValueRef.current = fromState.value;
-      fromEl.textContent = Math.round(fromState.value).toString();
-    };
-
-    const syncTo = () => {
-      toYearValueRef.current = toState.value;
-      toEl.textContent = Math.round(toState.value).toString();
-    };
-
-    const fromTween = gsap.to(fromState, {
-      value: activePeriod.startYear,
-      duration: 0.9,
-      ease: 'power2.out',
-      onUpdate: syncFrom
-    });
-
-    const toTween = gsap.to(toState, {
-      value: activePeriod.endYear,
-      duration: 0.9,
-      ease: 'power2.out',
-      onUpdate: syncTo
-    });
-
-    return () => {
-      fromTween.kill();
-      toTween.kill();
-    };
-  }, [activePeriod.startYear, activePeriod.endYear]);
+  // Хук анимирует заголовки годов при смене активного периода
+  useYearTweens({
+    fromYearRef,
+    toYearRef,
+    startYear: activePeriod.startYear,
+    endYear: activePeriod.endYear
+  });
 
 
   const handlePrevPeriod = () => {

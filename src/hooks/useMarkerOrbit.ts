@@ -1,32 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-
-import { MARKER_ANIMATION_DURATION, MARKER_SCALE_COEFFICIENT } from '@/constants/';
 
 type OrbitPoint = { angle: number };
 
 /**
-* Хук управляет анимацией размаха маркера, вращением по орбите и отображаемым индексом категории.
- * @param activeIndex - текущий активный индекс.
- * @param basePoints - базовые точки орбиты для маркеров.
- * @param markerSpanRefs - рефы спанов маркеров.
- * @param orbitTrackRef - реф трека орбиты.
- * @returns { visibleCategoryIndex } - возвращает индекс видимой категории.
+ * Хук анимирует маркеры и орбиту.
+ * @param activeIndex - индекс активного периода.
+ * @param basePoints - массив объектов с информацией о положении маркеров на орбите.
+ * @param orbitTrackRef - ссылка на элемент .timeline-block__orbit-track.
+ * @param markerSpanRefs - ссылка на массив маркеров.
+ * @returns {void} - Функция создаёт анимацию.
  */
-export const useMarkerOrbit = (
+const useMarkerOrbit = (
   activeIndex: number,
   basePoints: OrbitPoint[],
-  markerSpanRefs: React.MutableRefObject<(HTMLSpanElement | null)[]>,
-  orbitTrackRef: React.MutableRefObject<HTMLElement | null>
-) => {
-  const isFirstRenderRef = useRef(true);
+  orbitTrackRef: React.RefObject<HTMLElement | null>,
+  markerSpanRefs: React.MutableRefObject<(HTMLSpanElement | null)[]>
+) : void => {
   const markersInitializedRef = useRef(false);
-  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<number | null>(null);
+  const isFirstRenderRef = useRef(true);
 
   useEffect(() => {
-    // создаём массив анимаций для маркеров с использованием gsap 
     const animations: gsap.core.Tween[] = [];
 
+    // Animate marker spans
     markerSpanRefs.current.forEach((span, index) => {
       if (!span) return;
 
@@ -40,117 +37,57 @@ export const useMarkerOrbit = (
             border: 'none'
           });
         } else {
-          // анимируем активный маркер
           const tween = gsap.to(span, {
             scale: 1,
             backgroundColor: '#ffffff',
             border: 'none',
-            duration: MARKER_ANIMATION_DURATION,
-            // paused: true,
-            ease: 'power2.in'
+            duration: 0.6,
+            ease: 'back.out(1.7)'
           });
-          // добавляем активный маркер в массив анимаций
           animations.push(tween);
         }
       } else {
-        // если это неактивный маркер
         if (!markersInitializedRef.current) {
           gsap.set(span, {
-            scale: MARKER_SCALE_COEFFICIENT,
+            scale: 0.15,
             backgroundColor: '#303E58',
             border: 'none'
           });
         } else {
-          // анимируем неактивный маркер
           const tween = gsap.to(span, {
-            scale: MARKER_SCALE_COEFFICIENT,
+            scale: 0.15,
             backgroundColor: '#303E58',
             border: 'none',
-            duration: MARKER_ANIMATION_DURATION,
-            // paused: true,
+            duration: 0.6,
             ease: 'power2.in'
           });
-          // добавляем неактивный маркер в массив анимаций
           animations.push(tween);
         }
       }
     });
 
-/**
- * Хук создает последовательность анимаций при переходе к активному индексу.
- * @param targetIndex - целевой индекс для анимации.
- * @param [opts] - опции для настройки анимации.
- * @returns - возвращает созданную анимацию.
- */
-    const buildSequence = (targetIndex: number, opts?: { onComplete?: () => void }): gsap.core.Animation | null => {
-      const tl = gsap.timeline({ paused: false });
+    // Вращаем орбиту параллельно с анимациями маркеров
+    if (!orbitTrackRef.current || !basePoints[activeIndex]) {
+      return;
+    }
 
-      // Поворот орбиты на нужный угол при переходе к активному индексу
-      const rotate = () => {
-        if (!orbitTrackRef.current || !basePoints[targetIndex]) return;
+    const desiredAngle = -Math.PI / 4; // первая четверть (правый верх)
+    const activeAngle = basePoints[activeIndex].angle;
+    const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
+    const rotationValue = `${rotationDelta}deg`;
 
-        const desiredAngle = -Math.PI / 4;
-        const activeAngle = basePoints[targetIndex].angle;
-        const rotationDelta = ((desiredAngle - activeAngle) * 180) / Math.PI;
-        const rotationValue = `${rotationDelta}deg`;
-
-        // Проверяем, является ли это первый рендер
-        if (isFirstRenderRef.current) {
-          // Если да, устанавливаем начальное положение орбиты сразу
-          gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
-          isFirstRenderRef.current = false;
-        } else {
-          // иначе анимируем поворот орбиты
-          tl.to(orbitTrackRef.current, {
-            '--orbit-rotation': rotationValue,
-            duration: MARKER_ANIMATION_DURATION,
-            ease: 'power2.inOut'
-          });
-        }
-      };
-
-      // если есть анимации для маркеров, добавляем их в таймлайн
-      if (animations.length > 0) animations.forEach((t) => tl.add(t));
-      // делаем поворот орбиты
-      rotate();
-
-      // если передан коллбек onComplete, то добавляем его в таймлайн
-      if (typeof opts?.onComplete === 'function') tl.eventCallback('onComplete', opts.onComplete);
-      // если длительность таймлайна 0, вызываем onComplete сразу
-      if (tl.duration() === 0) opts?.onComplete?.();
-
-      return tl;
-    };
-
-    // сбрасываем видимый индекс категории перед анимацией, см. run
-    setVisibleCategoryIndex(null);
-
-    let cancelled = false;
-    let tl: gsap.core.Animation | null = null;
-
-
-    // Запуск анимации поворота орбиты на нужный угол, анимация маркеров.
-
-    const run = () => {
-      markersInitializedRef.current = markersInitializedRef.current || true;
-
-      tl = buildSequence(activeIndex, {
-        // по завершении анимации устанавливаем видимый индекс категории
-        onComplete: () => {
-          if (!cancelled) setVisibleCategoryIndex(activeIndex);
-        }
+    if (isFirstRenderRef.current) {
+      gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
+      isFirstRenderRef.current = false;
+      markersInitializedRef.current = true;
+    } else {
+      gsap.to(orbitTrackRef.current, {
+        '--orbit-rotation': rotationValue,
+        duration: 1.5,
+        ease: 'power2.inOut'
       });
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-      if (tl) tl.kill();
-    };
-  }, [activeIndex, basePoints, markerSpanRefs, orbitTrackRef]);
-
-  return { visibleCategoryIndex };
+    }
+  }, [activeIndex, basePoints]);
 }
 
 export default useMarkerOrbit;
