@@ -46,8 +46,8 @@ export const useMarkerOrbit = (
             backgroundColor: '#ffffff',
             border: 'none',
             duration: MARKER_ANIMATION_DURATION,
-            paused: true,
-            ease: 'back.out(1.7)'
+            // paused: true,
+            ease: 'power2.in'
           });
           // добавляем активный маркер в массив анимаций
           animations.push(tween);
@@ -58,16 +58,16 @@ export const useMarkerOrbit = (
           gsap.set(span, {
             scale: MARKER_SCALE_COEFFICIENT,
             backgroundColor: '#303E58',
-            borderColor: 'none'
+            border: 'none'
           });
         } else {
           // анимируем неактивный маркер
           const tween = gsap.to(span, {
             scale: MARKER_SCALE_COEFFICIENT,
             backgroundColor: '#303E58',
-            borderColor: 'none',
+            border: 'none',
             duration: MARKER_ANIMATION_DURATION,
-            paused: true,
+            // paused: true,
             ease: 'power2.in'
           });
           // добавляем неактивный маркер в массив анимаций

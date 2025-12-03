@@ -5,10 +5,10 @@ export const MARKER_ACTIVE_SIZE = 56;
 export const MARKER_SCALE_COEFFICIENT = 0.105;
 
 /* время анимации маркера */ 
-export const MARKER_ANIMATION_DURATION = 2;
+export const MARKER_ANIMATION_DURATION = 0.3;
 
 /* время анимации года */
-export const YEAR_ANIMATION_DURATION = 0.4;
+export const YEAR_ANIMATION_DURATION = 0.3;
 
 /* время анимации заголовка */
-export const HEADER_ANIMATION_DURATION = 0.4;
+export const HEADER_ANIMATION_DURATION = 0.3;
