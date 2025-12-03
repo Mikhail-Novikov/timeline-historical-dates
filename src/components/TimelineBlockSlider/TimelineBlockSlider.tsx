@@ -106,17 +106,11 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
           prevEl: sliderPrevRef.current,
           nextEl: sliderNextRef.current,
         }}
-        // onBeforeInit={(swiper) => {
-        //   if (typeof swiper.params.navigation !== 'boolean') {
-        //     swiper.params.navigation = {
-        //       prevEl: sliderPrevRef.current,
-        //       nextEl: sliderNextRef.current
-        //     };
-        //   }
-        // }}
+        watchOverflow
         slidesPerView={1.2}
-        spaceBetween={24}
+        spaceBetween={50}
         breakpoints={{
+          320: { slidesPerView: 1.5 },
           768: { slidesPerView: 2.5 },
           1400: { slidesPerView: 3.5 },
         }}>

@@ -9,7 +9,8 @@
   position: relative;
   isolation: isolate;
 
-  &::after, &::before {
+  &::after,
+  &::before {
     content: '';
     position: absolute;
     background-color: var(--timeline-border);
@@ -141,7 +142,7 @@
 }
 
 .timeline-block__orbit-marker {
-  font-family: PT Sans;
+  font-family: 'PT Sans';
   font-size: 20px;
   font-weight: 400;
   color: var(--black-blue);
@@ -203,41 +204,36 @@
 
 .timeline-block__period-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 0.5rem;
+  flex-direction: column;
+  gap: 20px;
+  position: absolute;
+  bottom: 255px;
 }
 
 .timeline-block__counter {
-  font-size: 1rem;
+  font-size: 14px;
   letter-spacing: 0.2em;
   color: var(--black-blue);
 }
 
-
 .timeline-block__nav-group {
   display: inline-flex;
-  gap: 0.75rem;
+  gap: 20px;
 }
 
-
 .timeline-block__nav-button {
-  // position: absolute;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 1px solid rgba(15, 29, 64, 0.1);
+  border: 1px solid var(--black-blue-05);
   background: transparent;
   cursor: pointer;
   font-size: 1.25rem;
   color: var(--black-blue);
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease-in-out;
 
   &:hover {
     background: var(--timeline-white);
-    color: #fff;
-    border-color: var(--timeline-white);
   }
 }
 

@@ -1,15 +1,15 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import './TimelineBlock.scss';
+import React, { useMemo, useRef, useState } from "react";
+import { gsap } from "gsap";
+import "swiper/css";
+import "swiper/css/navigation";
+import "./TimelineBlock.scss";
 
-import type { TimelinePeriod } from '@/data/timelineData';
-import { TimelineBlockSlider} from '@/components/TimelineBlockSlider/TimelineBlockSlider';
-import useHeaderYearsAnimation from '@/hooks/useHeaderYearsAnimation';
-import useMarkerOrbit from '@/hooks/useMarkerOrbit';
-import useYearTweens from '@/hooks/useYearTweens';
-import { MARKER_SCALE_COEFFICIENT } from '@/constants/';
+import type { TimelinePeriod } from "@/data/timelineData";
+import { TimelineBlockSlider } from "@/components/TimelineBlockSlider/TimelineBlockSlider";
+import useHeaderYearsAnimation from "@/hooks/useHeaderYearsAnimation";
+import useMarkerOrbit from "@/hooks/useMarkerOrbit";
+import useYearTweens from "@/hooks/useYearTweens";
+import { MARKER_SCALE_COEFFICIENT } from "@/constants/";
 
 type TimelineBlockProps = {
   title: string;
@@ -55,7 +55,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
         label: formatCounter(index + 1),
         angle: baseAngle,
         left: `${x}%`,
-        top: `${y}%`
+        top: `${y}%`,
       };
     });
   }, [periods, total]);
@@ -64,39 +64,43 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   useHeaderYearsAnimation(blockRef, [activeIndex]);
 
   /** Анимация маркеров */
-  const { visibleCategoryIndex } = useMarkerOrbit(activeIndex, basePoints, markerSpanRefs, orbitTrackRef);
+  const { visibleCategoryIndex } = useMarkerOrbit(
+    activeIndex,
+    basePoints,
+    markerSpanRefs,
+    orbitTrackRef
+  );
 
   const YearTweens = {
     fromYearRef,
     toYearRef,
     startYear: activePeriod.startYear,
-    endYear: activePeriod.endYear
+    endYear: activePeriod.endYear,
   };
   /** Анимация смены года */
   useYearTweens(YearTweens);
 
-
-/**
- * Увеличивает предыдущий годовой период.
- */
+  /**
+   * Увеличивает предыдущий годовой период.
+   */
   const handlePrevPeriod = (): void => {
     setActiveIndex((prev) => (prev - 1 + total) % total);
   };
 
-/**
- * Хандлер увеличивает следующ годовой период.
- */
+  /**
+   * Хандлер увеличивает следующ годовой период.
+   */
   const handleNextPeriod = (): void => {
     setActiveIndex((prev) => (prev + 1) % total);
   };
 
-/**
- * Хандлер анимации наведения курсора на маркер.
- *
- * @param {number} index - Индекс маркера.
- * @param {boolean} isHovering - Флаг наведения курсора.
- * @returns {void}
- */
+  /**
+   * Хандлер анимации наведения курсора на маркер.
+   *
+   * @param {number} index - Индекс маркера.
+   * @param {boolean} isHovering - Флаг наведения курсора.
+   * @returns {void}
+   */
   const handleMarkerHover = (index: number, isHovering: boolean): void => {
     const span = markerSpanRefs.current[index];
     if (!span || index === activeIndex) return;
@@ -105,36 +109,33 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
       // При наведении: расширяем до scale(1), меняем фон на белый
       gsap.to(span, {
         scale: 1,
-        backgroundColor: '#ffffff',
-        duration: .4,
-        ease: 'power1.in'
+        backgroundColor: "#ffffff",
+        duration: 0.4,
+        ease: "power1.in",
       });
     } else {
       // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
       gsap.to(span, {
         scale: MARKER_SCALE_COEFFICIENT,
-        backgroundColor: '#303E58',
-        duration: .4,
-        ease: 'power1.in'
+        backgroundColor: "#303E58",
+        duration: 0.4,
+        ease: "power1.in",
       });
     }
   };
 
   return (
     <section className="timeline-block" ref={blockRef}>
-
       <div className="timeline-block__orbit">
         <div className="timeline-block__years">
           <span
             className="timeline-block__year timeline-block__year--from"
-            ref={fromYearRef}
-          >
+            ref={fromYearRef}>
             {activePeriod.startYear}
           </span>
           <span
             className="timeline-block__year timeline-block__year--to"
-            ref={toYearRef}
-          >
+            ref={toYearRef}>
             {activePeriod.endYear}
           </span>
         </div>
@@ -144,60 +145,81 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
               key={point.id}
               type="button"
               className={[
-                'timeline-block__orbit-marker',
-                index === activeIndex ? 'is-active' : ''
+                "timeline-block__orbit-marker",
+                index === activeIndex ? "is-active" : "",
               ]
                 .filter(Boolean)
-                .join(' ')}
+                .join(" ")}
               style={{ left: point.left, top: point.top }}
               onMouseEnter={() => handleMarkerHover(index, true)}
               onMouseLeave={() => handleMarkerHover(index, false)}
               onClick={() => setActiveIndex(index)}
-              aria-label={`Перейти к отрезку ${point.label}`}
-            >
+              aria-label={`Перейти к отрезку ${point.label}`}>
+              <span
+                ref={(el) => {
+                  markerSpanRefs.current[index] = el;
+                }}>
+                {point.label}
+              </span>
+              {index === activeIndex && (
                 <span
-                  ref={(el) => {
-                    markerSpanRefs.current[index] = el;
-                  }}
-                >
-                  {point.label}
+                  className={
+                    "timeline-block__marker-category " +
+                    (visibleCategoryIndex === index ? "is-visible" : "")
+                  }
+                  aria-hidden>
+                  {activePeriod.category}
                 </span>
-                {index === activeIndex && (
-                  <span
-                    className={
-                      'timeline-block__marker-category ' +
-                      (visibleCategoryIndex === index ? 'is-visible' : '')
-                    }
-                    aria-hidden
-                  >
-                    {activePeriod.category}
-                  </span>
-                )}
+              )}
             </button>
           ))}
         </div>
       </div>
-      
+
       <div className="timeline-block__period-controls">
-        <span className="timeline-block__counter">
+        <div className="timeline-block__counter">
           {formatCounter(activeIndex + 1)}/{formatCounter(total)}
-        </span>
+        </div>
         <div className="timeline-block__nav-group">
           <button
             type="button"
             className="timeline-block__nav-button"
             onClick={handlePrevPeriod}
-            aria-label="Предыдущий временной отрезок"
-          >
-            <span aria-hidden>←</span>
+            aria-label="Предыдущий временной отрезок">
+            <span aria-hidden>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="9"
+                height="14"
+                viewBox="0 0 9 14"
+                fill="none">
+                <path
+                  d="M7.66418 0.707108L1.41419 6.95711L7.66418 13.2071"
+                  stroke="#42567A"
+                  stroke-width="2"
+                />
+              </svg>
+            </span>
           </button>
           <button
             type="button"
             className="timeline-block__nav-button"
             onClick={handleNextPeriod}
-            aria-label="Следующий временной отрезок"
-          >
-            <span aria-hidden>→</span>
+            aria-label="Следующий временной отрезок">
+            <span aria-hidden>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="9"
+                height="14"
+                viewBox="0 0 9 14"
+                fill="none">
+                <path
+                  d="M0.707092 0.707108L6.95709 6.95711L0.707093 13.2071"
+                  stroke="#42567A"
+                  stroke-width="2"
+                />
+              </svg>
+            </span>
           </button>
         </div>
       </div>
@@ -208,4 +230,3 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
 };
 
 export default TimelineBlock;
-
