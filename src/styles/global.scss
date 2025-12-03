@@ -1,9 +1,38 @@
-:root {
-  font-size: 16px;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
-  color: #0f1d40;
-  background-color: #f4f5f9;
+@font-face {
+    font-family: 'Bebas Neue Cyrillic';
+    src: url('../fonts/BebasNeueCyrillic.eot');
+    src: local('../fonts/Bebas Neue Cyrillic'), local('BebasNeueCyrillic'),
+        url('../fonts/BebasNeueCyrillic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/BebasNeueCyrillic.woff2') format('woff2'),
+        url('../fonts/BebasNeueCyrillic.woff') format('woff'),
+        url('../fonts/BebasNeueCyrillic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    src: url('../fonts/PTSans-Regular.eot');
+    src: local('../fonts/PT Sans'), local('PTSans-Regular'),
+        url('../fonts/PTSans-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/PTSans-Regular.woff2') format('woff2'),
+        url('../fonts/PTSans-Regular.woff') format('woff'),
+        url('../fonts/PTSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PT Sans Bold';
+    src: url('../fonts/PTSans-Bold.eot');
+    src: local('../fonts/PT Sans Bold'), local('PTSans-Bold'),
+        url('../fonts/PTSans-Bold.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/PTSans-Bold.woff2') format('woff2'),
+        url('../fonts/PTSans-Bold.woff') format('woff'),
+        url('../fonts/PTSans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
 }
 
 :root {
@@ -14,6 +43,7 @@
   --timeline-marker: rgba(48, 62, 88, .5);
   --timeline-border: rgba(66, 86, 122, .1);
   --black-blue: #42567A;
+  --timeline-blue: #3877ee;
   --timeline-pink: #ff4fb6;
 }
 
@@ -25,7 +55,7 @@
 
 body {
   font-size: 16px;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  font-family: 'PT Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
   margin: 0;
   min-height: 100vh;
@@ -34,11 +64,15 @@ body {
 
 .app-shell {
   min-height: 100vh;
-  padding-left: 320px;
-  padding-right: 160px;
+  padding-left: 17%;
+  padding-right: 10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+}
+
+.r-180 {
+  transform: rotateZ(180deg);
 }
 

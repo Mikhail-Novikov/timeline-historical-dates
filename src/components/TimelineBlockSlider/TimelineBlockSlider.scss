@@ -14,13 +14,29 @@
 
   .swiper {
     width: 100%;
-    height: 150px;
+    height: 175px;
   }
 
   .timeline-block__slider-nav {
     position: absolute;
-    display: inline-flex;
+    display: flex;
     gap: 0.75rem;
+    justify-content: space-between;
+    left: -60px;
+    right: -60px;
+    bottom: -136px;
+    z-index: 2;
+  }
+
+  .timeline-block__nav-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    box-shadow: 0 0 15px 0 rgba(56, 119, 238, .1);
+    background: var(--timeline-white);
+    cursor: pointer;
+    transition: stroke .3s ease-in-out;
   }
 
   .timeline-block__slider-headline {
@@ -29,6 +45,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    position: relative;
 
     h2 {
       margin: 0;
@@ -39,37 +56,30 @@
 
   .timeline-block__card {
     padding: 1.5rem;
-    min-height: 135px;
+    min-height: 155px;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 
     &-year {
-      font-size: 1rem;
-      letter-spacing: 0.2em;
+      font-family: 'Bebas Neue Cyrillic', system-ui;
+      font-size: 25px;
+      font-weight: 400;
       color: var(--timeline-blue);
-      font-weight: 600;
-    }
-
-    &-title {
-      margin: 0;
-      font-size: 1.1rem;
-      color: var(--black-blue);
+      text-transform: uppercase;
     }
 
     &-text {
+      font-size: 20px;
       margin: 0;
       color: var(--black-blue);
       line-height: 1.5;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      line-clamp: 3;
-      -webkit-line-clamp: 3;
-      text-overflow: ellipsis;
-      // разрешить перенос слов
+      line-clamp: 4;
+      -webkit-line-clamp: 4;
       word-break: break-word;
-
     }
   }
 
