@@ -125,7 +125,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   };
 
   return (
-    <section className="timeline-block" ref={blockRef}>
+    <section className="timeline" ref={blockRef}>
+      <div className="timeline-block">
       <div className="timeline-block__orbit">
         <div className="timeline-block__years">
           <span
@@ -174,7 +175,9 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
             </button>
           ))}
         </div>
+      </div>        
       </div>
+
 
       <div className="timeline-block__period-controls">
         <div className="timeline-block__counter">
