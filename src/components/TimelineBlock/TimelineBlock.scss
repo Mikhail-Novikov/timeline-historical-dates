@@ -100,18 +100,6 @@
   z-index: 2;
 }
 
-.timeline-block__years {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 100px;
-  top: 0;
-  bottom: 0;
-  left: -50%;
-  width: 100%;
-  z-index: 1;
-}
-
 .timeline-block__orbit-track {
   position: absolute;
   inset: 0;
@@ -122,8 +110,18 @@
   z-index: 2;
 }
 
+.timeline-block__years {
+  position: absolute;
+  display: flex;
+  align-items: center;;
+  justify-content: center;
+  gap: 100px;
+  height: 100%;
+  width: 100%;
+}
+
 .timeline-block__year {
-  font-size: 200px;
+  font-size: 56px;
   font-family: 'PT Sans Bold';
   font-weight: 700;
   line-height: 1;
