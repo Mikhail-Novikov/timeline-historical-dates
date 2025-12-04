@@ -3,12 +3,16 @@ import { gsap } from "gsap";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./TimelineBlock.scss";
+import "./TimelineBlockMobile.scss";
 
 import type { TimelinePeriod } from "@/data/timelineData";
 import { TimelineBlockSlider } from "@/components/TimelineBlockSlider/TimelineBlockSlider";
 
 import useYearTweens from "@/hooks/useYearTweens";
-import { MARKER_ANIMATION_DURATION, MARKER_SCALE_COEFFICIENT } from "@/constants/";
+import {
+  MARKER_ANIMATION_DURATION,
+  MARKER_SCALE_COEFFICIENT,
+} from "@/constants/";
 import useMarkerOrbit from "@/hooks/useMarkerOrbit";
 
 type TimelineBlockProps = {
@@ -28,7 +32,9 @@ const formatCounter = (value: number) => value.toString();
 
 const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<number | null>(null);
+  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<
+    number | null
+  >(null);
   const blockRef = useRef<HTMLDivElement>(null);
   const orbitTrackRef = useRef<HTMLDivElement>(null);
   const fromYearRef = useRef<HTMLSpanElement>(null);
@@ -53,17 +59,13 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
         label: formatCounter(index + 1),
         angle: baseAngle,
         left: `${x}%`,
-        top: `${y}%`
+        top: `${y}%`,
       };
     });
   }, [periods, total]);
 
-  useMarkerOrbit(
-    activeIndex,
-    basePoints,
-    orbitTrackRef,
-    markerSpanRefs,
-    () => setVisibleCategoryIndex(activeIndex)
+  useMarkerOrbit(activeIndex, basePoints, orbitTrackRef, markerSpanRefs, () =>
+    setVisibleCategoryIndex(activeIndex)
   );
 
   // Хук анимирует заголовки годов при смене активного периода
@@ -71,9 +73,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     fromYearRef,
     toYearRef,
     startYear: activePeriod.startYear,
-    endYear: activePeriod.endYear
+    endYear: activePeriod.endYear,
   });
-
 
   const handlePrevPeriod = () => {
     setActiveIndex((prev) => (prev - 1 + total) % total);
@@ -90,18 +91,18 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     if (isHovering) {
       gsap.to(span, {
         scale: 1,
-        backgroundColor: '#ffffff',
-        border: 'none',
+        backgroundColor: "#ffffff",
+        border: "none",
         duration: MARKER_ANIMATION_DURATION,
-        ease: 'power1.in'
+        ease: "power1.in",
       });
     } else {
       gsap.to(span, {
         scale: MARKER_SCALE_COEFFICIENT,
-        backgroundColor: '#303E58',
-        border: 'none',
+        backgroundColor: "#303E58",
+        border: "none",
         duration: MARKER_ANIMATION_DURATION,
-        ease: 'power1.in'
+        ease: "power1.in",
       });
     }
   };
@@ -109,57 +110,56 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   return (
     <section className="timeline" ref={blockRef}>
       <div className="timeline-block">
-      <div className="timeline-block__orbit">
-        <div className="timeline-block__years">
-          <span
-            className="timeline-block__year timeline-block__year--from"
-            ref={fromYearRef}>
-            {activePeriod.startYear}
-          </span>
-          <span
-            className="timeline-block__year timeline-block__year--to"
-            ref={toYearRef}>
-            {activePeriod.endYear}
-          </span>
-        </div>
-        <div className="timeline-block__orbit-track" ref={orbitTrackRef}>
-          {basePoints.map((point, index) => (
-            <button
-              key={point.id}
-              type="button"
-              className={[
-                "timeline-block__orbit-marker",
-                index === activeIndex ? "is-active" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              style={{ left: point.left, top: point.top }}
-              onMouseEnter={() => handleMarkerHover(index, true)}
-              onMouseLeave={() => handleMarkerHover(index, false)}
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Перейти к отрезку ${point.label}`}>
-              <span
-                ref={(el) => {
-                  markerSpanRefs.current[index] = el;
-                }}>
-                {point.label}
-              </span>
-              {index === activeIndex && (
+        <div className="timeline-block__orbit">
+          <div className="timeline-block__years">
+            <span
+              className="timeline-block__year timeline-block__year--from"
+              ref={fromYearRef}>
+              {activePeriod.startYear}
+            </span>
+            <span
+              className="timeline-block__year timeline-block__year--to"
+              ref={toYearRef}>
+              {activePeriod.endYear}
+            </span>
+          </div>
+          <div className="timeline-block__orbit-track" ref={orbitTrackRef}>
+            {basePoints.map((point, index) => (
+              <button
+                key={point.id}
+                type="button"
+                className={[
+                  "timeline-block__orbit-marker",
+                  index === activeIndex ? "is-active" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                style={{ left: point.left, top: point.top }}
+                onMouseEnter={() => handleMarkerHover(index, true)}
+                onMouseLeave={() => handleMarkerHover(index, false)}
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Перейти к отрезку ${point.label}`}>
                 <span
-                  className={
-                    "timeline-block__marker-category " +
-                    (visibleCategoryIndex === index ? "is-visible" : "")
-                  }
-                  aria-hidden>
-                  {activePeriod.category}
+                  ref={(el) => {
+                    markerSpanRefs.current[index] = el;
+                  }}>
+                  {point.label}
                 </span>
-              )}
-            </button>
-          ))}
+                {index === activeIndex && (
+                  <span
+                    className={
+                      "timeline-block__marker-category " +
+                      (visibleCategoryIndex === index ? "is-visible" : "")
+                    }
+                    aria-hidden>
+                    {activePeriod.category}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>        
       </div>
-
 
       <div className="timeline-block__period-controls">
         <div className="timeline-block__counter">
@@ -208,8 +208,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
           </button>
         </div>
       </div>
-
-      <TimelineBlockSlider activeIndex={activeIndex} periods={periods} />
+      
+      <TimelineBlockSlider activeIndex={activeIndex} periods={periods} category={activePeriod.category} />
     </section>
   );
 };

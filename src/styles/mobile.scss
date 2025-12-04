@@ -1,0 +1,24 @@
+@media screen and (min-width: 577px) {
+    .app-shell {
+      padding-left: 32px;
+      padding-right: 32px;
+      justify-content: center;
+    }
+
+}
+
+@media screen and (min-width: 769px) {
+    .app-shell {
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+
+}
+
+@media screen and (min-width: 1181px) {
+    .app-shell {
+      padding-left: 17%;
+      padding-right: 10%;
+    }
+
+}

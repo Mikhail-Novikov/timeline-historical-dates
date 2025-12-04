@@ -1,16 +1,25 @@
 .timeline-block__slider {
   display: flex;
   flex-direction: column;
-  gap: 100px;
+  gap: 20px;
+  margin-top: 57px;
+  margin-left: -20px;
+  margin-right: -20px;
+  border-top: 1px solid var(--timeline-border-gray);
 
   .swiper {
     width: 100%;
-    height: 175px;
+    height: 235px;
+
+
+    .swiper-pagination-bullet-active {
+      background: var(--black-blue, #000000);
+    }
   }
 
   .timeline-block__slider-nav {
     position: absolute;
-    display: flex;
+    display: none;
     gap: 0.75rem;
     justify-content: space-between;
     left: -60px;
@@ -55,18 +64,18 @@
     min-height: 155px;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 15px;
 
     &-year {
       font-family: 'Bebas Neue Cyrillic', system-ui;
-      font-size: 25px;
+      font-size: 16px;
       font-weight: 400;
       color: var(--timeline-blue);
       text-transform: uppercase;
     }
 
     &-text {
-      font-size: 20px;
+      font-size: 14px;
       margin: 0;
       color: var(--black-blue);
       line-height: 1.5;
@@ -79,18 +88,4 @@
     }
   }
 
-  @media (max-width: 768px) {
-    height: auto;
-    gap: 0.75rem;
-
-    .timeline-block__slider-headline {
-      gap: 0.5rem;
-      align-items: flex-start;
-    }
-
-    .timeline-block__card {
-      min-height: 120px;
-      padding: 1rem;
-    }
-  }
 }

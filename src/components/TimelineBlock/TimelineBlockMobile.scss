@@ -1,0 +1,163 @@
+@media screen and (min-width: 577px) {
+  .timeline {
+    border-color: var(--timeline-border);
+    border-style: solid;
+    border-width: 0 1px;
+    padding: 32px;
+    flex-grow: 0;
+  }
+
+  .timeline-block {
+    &__orbit {
+      align-self: center;
+      aspect-ratio: 1;
+      width: min(360px, 90vw);
+    }
+
+    &__orbit-track {
+      display: block;
+    }
+
+    &::after,
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--timeline-border);
+    }
+
+    &::after {
+      width: 1px;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+    }
+
+    &::before {
+      height: 1px;
+      left: 0;
+      right: 0;
+      margin-top: 180px;
+    }
+
+    &__title {
+      font-size: 22px;
+      left: 26px;
+      top: 50px;
+
+      &::before {
+        content: "";
+        left: -26px;
+        display: block;
+      }
+    }
+
+    &__header {
+      flex-grow: 0;
+    }
+
+    &__category-mobile {
+      display: none;
+    }
+
+    &__years {
+      gap: 50px;
+      position: absolute;
+    }
+
+    &__year {
+      font-size: 80px;
+    }
+
+    &__period-controls {
+      gap: 20px;
+      bottom: 255px;
+    }
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .timeline {
+    padding: 170px 80px 20px;
+  }
+
+  .timeline-block {
+    &__title {
+      font-size: 28px;
+      left: 26px;
+      top: 170px;
+
+      &::before {
+        left: -26px;
+      }
+    }
+
+    &__years {
+      gap: 100px;
+    }
+
+    &__year {
+      font-size: 100px;
+    }
+
+    &::before {
+      margin-top: 265px;
+    }
+
+    &__orbit {
+      width: min(530px, 90vw);
+    }
+
+    &__nav-button {
+      width: 50px;
+      height: 50px;
+
+      svg {
+        width: 18px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .timeline-block {
+    &__title {
+      font-size: 38px;
+      left: 30px;
+
+      &::before {
+        left: -30px;
+      }
+    }
+
+    &__year {
+      font-size: 150px;
+    }
+  }
+}
+
+@media screen and (min-width: 1181px) {
+  .timeline-block {
+    &__title {
+      font-size: 50px;
+
+      left: 80px;
+
+      &::before {
+        left: -80px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1401px) {
+  .app-shell {
+    padding-left: 10%;
+    padding-right: 5%;
+  }
+
+  .timeline-block {
+    &__title {
+      font-size: 56px;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+@media screen and (min-width: 577px) {
+  .timeline-block__slider {
+    gap: 100px;
+    border-top: none;
+    margin-left: auto;
+    margin-right: auto;
+    .swiper {
+      height: 175px;
+    }
+
+    .timeline-block__card {
+      &-year {
+        font-size: 25px;
+      }
+
+      &-text {
+        font-size: 20px;
+      }
+    }
+
+    .timeline-block__slider-nav {
+      display: flex;
+    }
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .timeline-block {}
+}
+
+@media screen and (min-width: 900px) {
+  .timeline-block {}
+}
+
+@media screen and (min-width: 1181px) {
+  .timeline-block {}
+}
+
+@media screen and (min-width: 1401px) {
+  .timeline-block {}
+}
