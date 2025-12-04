@@ -88,7 +88,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     if (!span || index === activeIndex) return;
 
     if (isHovering) {
-      // При наведении: расширяем до scale(1), меняем фон на белый
       gsap.to(span, {
         scale: 1,
         backgroundColor: '#ffffff',
@@ -97,7 +96,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
         ease: 'power1.in'
       });
     } else {
-      // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
       gsap.to(span, {
         scale: MARKER_SCALE_COEFFICIENT,
         backgroundColor: '#303E58',
