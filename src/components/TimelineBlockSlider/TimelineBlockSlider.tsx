@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
+import { gsap } from "gsap";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./TimelineBlockSlider.scss";
@@ -19,6 +20,7 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
   const sliderPrevRef = useRef<HTMLButtonElement>(null);
   const sliderNextRef = useRef<HTMLButtonElement>(null);
   const swiperInstance = useRef<SwiperClass | null>(null);
+  const sliderContainerRef = useRef(null);
 
   const activePeriod = periods[activeIndex];
 
@@ -48,6 +50,24 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
     swiper.navigation.destroy();
     swiper.navigation.init();
     swiper.navigation.update();
+  }, [activePeriod.id]);
+
+  useEffect(() => {
+    if (!sliderContainerRef.current) return;
+
+    gsap.fromTo(
+      sliderContainerRef.current,
+      {
+        opacity: 0,
+        y: 10,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.inOut",
+      }
+    );
   }, [activePeriod.id]);
 
   return (
@@ -97,6 +117,7 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
         </div>
       </div>
       <Swiper
+        ref={sliderContainerRef}
         key={activePeriod.id}
         modules={[Navigation]}
         onSwiper={(swiper) => {
