@@ -15,7 +15,8 @@ const useMarkerOrbit = (
   activeIndex: number,
   basePoints: OrbitPoint[],
   orbitTrackRef: React.RefObject<HTMLElement | null>,
-  markerSpanRefs: React.MutableRefObject<(HTMLSpanElement | null)[]>
+  markerSpanRefs: React.MutableRefObject<(HTMLSpanElement | null)[]>,
+  onRotationComplete?: VoidFunction
 ) : void => {
   const markersInitializedRef = useRef(false);
   const isFirstRenderRef = useRef(true);
@@ -23,7 +24,7 @@ const useMarkerOrbit = (
   useEffect(() => {
     const animations: gsap.core.Tween[] = [];
 
-    // Animate marker spans
+    // Анимируем маркеры
     markerSpanRefs.current.forEach((span, index) => {
       if (!span) return;
 
@@ -80,11 +81,13 @@ const useMarkerOrbit = (
       gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
       isFirstRenderRef.current = false;
       markersInitializedRef.current = true;
+      onRotationComplete?.();
     } else {
       gsap.to(orbitTrackRef.current, {
         '--orbit-rotation': rotationValue,
         duration: 1.5,
-        ease: 'power2.inOut'
+        ease: 'power2.inOut',
+        onComplete: () => onRotationComplete?.()
       });
     }
   }, [activeIndex, basePoints]);

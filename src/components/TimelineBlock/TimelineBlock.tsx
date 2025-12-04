@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -28,13 +28,12 @@ const formatCounter = (value: number) => value.toString();
 
 const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<number | null>(null);
   const blockRef = useRef<HTMLDivElement>(null);
   const orbitTrackRef = useRef<HTMLDivElement>(null);
   const fromYearRef = useRef<HTMLSpanElement>(null);
   const toYearRef = useRef<HTMLSpanElement>(null);
-  const isFirstRenderRef = useRef(true);
   const markerSpanRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const markersInitializedRef = useRef(false);
 
   const total = periods.length;
   const activePeriod = periods[activeIndex];
@@ -63,7 +62,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     activeIndex,
     basePoints,
     orbitTrackRef,
-    markerSpanRefs
+    markerSpanRefs,
+    () => setVisibleCategoryIndex(activeIndex)
   );
 
   // Хук анимирует заголовки годов при смене активного периода
@@ -93,16 +93,16 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
         scale: 1,
         backgroundColor: '#ffffff',
         border: 'none',
-        duration: .3,
+        duration: MARKER_ANIMATION_DURATION,
         ease: 'power1.in'
       });
     } else {
       // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
       gsap.to(span, {
-        scale: 0.105,
+        scale: MARKER_SCALE_COEFFICIENT,
         backgroundColor: '#303E58',
         border: 'none',
-        duration: .3,
+        duration: MARKER_ANIMATION_DURATION,
         ease: 'power1.in'
       });
     }
@@ -150,7 +150,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
                 <span
                   className={
                     "timeline-block__marker-category " +
-                    (activeIndex === index ? "is-visible" : "")
+                    (visibleCategoryIndex === index ? "is-visible" : "")
                   }
                   aria-hidden>
                   {activePeriod.category}
