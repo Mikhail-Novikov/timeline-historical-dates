@@ -49,13 +49,13 @@ const useMarkerOrbit = (
       } else {
         if (!markersInitializedRef.current) {
           gsap.set(span, {
-            scale: 0.15,
+            scale: 0.105,
             backgroundColor: '#303E58',
             border: 'none'
           });
         } else {
           const tween = gsap.to(span, {
-            scale: 0.15,
+            scale: 0.105,
             backgroundColor: '#303E58',
             border: 'none',
             duration: 0.6,

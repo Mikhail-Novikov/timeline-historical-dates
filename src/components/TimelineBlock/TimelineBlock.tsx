@@ -99,7 +99,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
     } else {
       // При уходе: возвращаем к scale(0.15), фон обратно на #303E58
       gsap.to(span, {
-        scale: 0.15,
+        scale: 0.105,
         backgroundColor: '#303E58',
         border: 'none',
         duration: .3,
