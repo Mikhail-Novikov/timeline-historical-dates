@@ -92,27 +92,12 @@
 }
 
 .timeline-block__orbit {
-  width: min(530px, 90vw);
   aspect-ratio: 1;
   align-self: center;
-  position: relative;
   --orbit-rotation: 0deg;
-  border-radius: 50%;
-  border: 1px solid var(--timeline-orbit);
-}
-
-.timeline-block__orbit-track {
-  position: absolute;
-  inset: 0;
-  transform-origin: 50% 50%;
-  transform: rotate(var(--orbit-rotation));
-}
-
-.timeline-block__orbit-axis {
-  position: absolute;
-  inset: 0;
-  border-color: rgba(15, 29, 64, 0.06);
-  z-index: -1;
+  width: min(530px, 90vw);
+  position: relative;
+  z-index: 2;
 }
 
 .timeline-block__years {
@@ -124,6 +109,17 @@
   bottom: 0;
   left: -50%;
   width: 100%;
+  z-index: 1;
+}
+
+.timeline-block__orbit-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--timeline-orbit);
+  transform-origin: 50% 50%;
+  transform: rotate(var(--orbit-rotation));
+  z-index: 2;
 }
 
 .timeline-block__year {
