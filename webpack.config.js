@@ -2,16 +2,17 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const isDev = process.env.NODE_ENV !== 'production';
-const pathDist = path.resolve(__dirname, 'docs');
+module.exports = (env, argv) => {
+  const isDev = argv.mode !== 'production';
+  const pathDist = path.resolve(__dirname, 'docs');
 
-module.exports = {
+  return {
   entry: path.resolve(__dirname, 'src/index.tsx'),
   output: {
     path: pathDist,
     filename: isDev ? '[name].js' : '[name].[contenthash].js',
     clean: true,
-    publicPath: isDev ? '/' : './'
+    publicPath: isDev ? '/' : ''
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -78,5 +79,6 @@ module.exports = {
     port: 3000,
     historyApiFallback: true
   }
+  };
 };
 
