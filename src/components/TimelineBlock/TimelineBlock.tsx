@@ -111,7 +111,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }): JSX.Element =
     if (isHovering) {
       gsap.to(span, {
         scale: 1,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#F4F5F9",
         border: "none",
         duration: MARKER_ANIMATION_DURATION,
         ease: "power1.in",

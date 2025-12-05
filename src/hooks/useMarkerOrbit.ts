@@ -34,13 +34,13 @@ const useMarkerOrbit = (
         if (!markersInitializedRef.current) {
           gsap.set(span, {
             scale: 1,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#F4F5F9',
             border: 'none'
           });
         } else {
           const tween = gsap.to(span, {
             scale: 1,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#F4F5F9',
             border: 'none',
             duration: 0.6,
             ease: 'back.out(1.7)'
@@ -48,17 +48,16 @@ const useMarkerOrbit = (
           animations.push(tween);
         }
       } else {
+        // первая инициализация
         if (!markersInitializedRef.current) {
           gsap.set(span, {
             scale: 0.105,
             backgroundColor: '#303E58',
-            border: 'none'
           });
         } else {
           const tween = gsap.to(span, {
             scale: 0.105,
             backgroundColor: '#303E58',
-            border: 'none',
             duration: 0.6,
             ease: 'power2.in'
           });

@@ -105,7 +105,7 @@
 
   &__orbit-marker:not(.is-active) span {
     display: inline-flex;
-    background-color: #303E58;
+    background-color: var(--filling);
     justify-content: center;
     align-items: center;
     border-radius: 50%;
@@ -118,10 +118,11 @@
 
   &__orbit-marker.is-active {
     box-shadow: inset 0 0 0 1px var(--timeline-marker);
-    background-color: #ffffff;
+    background-color: var(--filling);
     cursor: default;
 
     span {
+      background-color: var(--filling) !important;
       color: var(--black-blue);
       box-shadow: inset 0 0 0 1px transparent;
     }
