@@ -3,14 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV !== 'production';
+const pathDist = path.resolve(__dirname, 'docs');
 
 module.exports = {
   entry: path.resolve(__dirname, 'src/index.tsx'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: pathDist,
     filename: isDev ? '[name].js' : '[name].[contenthash].js',
     clean: true,
-    publicPath: '/'
+    publicPath: isDev ? '/' : './'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -71,7 +72,7 @@ module.exports = {
   devtool: isDev ? 'eval-source-map' : 'source-map',
   devServer: {
     static: {
-      directory: path.resolve(__dirname, 'dist')
+      directory: pathDist
     },
     hot: true,
     port: 3000,
