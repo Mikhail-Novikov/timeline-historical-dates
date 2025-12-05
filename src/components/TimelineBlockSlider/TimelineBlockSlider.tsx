@@ -10,17 +10,30 @@ import "./TimelineBlockSlider.scss";
 import "./TimelineBlockSliderMobile.scss";
 import type { TimelinePeriod } from "@/data/timelineData";
 
+// Тип для пропсов TimelineBlockSlider
 type TimelineBlockSliderProps = {
+  // Индекс активного периода
   activeIndex: number;
+  // Массив периодов
   periods: TimelinePeriod[];
+  // Категория периодов
   category?: string;
 };
 
-export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
+/**
+ * TimelineBlockSlider - компонент слайдер с периодами на временной шкале в виде слайдов.
+ *
+ * @param activeIndex - индекс активного периода.
+ * @param periods - массив периодов.
+ * @param category - категория периодов.
+ *
+ * @returns {JSX.Element}
+ */
+const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
   activeIndex = 0,
   periods,
   category,
-}) => {
+}): JSX.Element => {
   const sliderPrevRef = useRef<HTMLButtonElement>(null);
   const sliderNextRef = useRef<HTMLButtonElement>(null);
   const swiperInstance = useRef<SwiperClass | null>(null);
@@ -75,7 +88,7 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
   }, [activePeriod.id]);
 
   return (
-    <div>
+    <div className="timeline-block__slider-wrapper">
       <h2 className="timeline-block__category-mobile">{category}</h2>
       <div className="timeline-block__slider">
         <div className="timeline-block__slider-headline">
@@ -137,13 +150,21 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
           watchOverflow
           spaceBetween={50}
           breakpoints={{
-            320: { 
+            0: {
               slidesPerView: 1.5,
               pagination: { enabled: true, clickable: true },
-              slidesOffsetBefore: 20
+              slidesOffsetBefore: 20,
             },
-            577: { slidesPerView: 2.5, pagination: { enabled: false } },
-            1400: { slidesPerView: 3.5, pagination: { enabled: false } },
+            577: {
+              slidesPerView: 2.5,
+              pagination: { enabled: false },
+              slidesOffsetBefore: 0,
+            },
+            1400: {
+              slidesPerView: 3.5,
+              pagination: { enabled: false },
+              slidesOffsetBefore: 0,
+            },
           }}>
           {activePeriod.events.map((event) => (
             <SwiperSlide
@@ -163,3 +184,5 @@ export const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
     </div>
   );
 };
+
+export default TimelineBlockSlider;

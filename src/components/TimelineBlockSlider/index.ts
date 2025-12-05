@@ -1,1 +1,3 @@
-export * as TimelineBlockSlider from "./TimelineBlockSlider";
+import TimelineBlockSlider from "./TimelineBlockSlider";
+
+export default TimelineBlockSlider;

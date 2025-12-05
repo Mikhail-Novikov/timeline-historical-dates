@@ -4,6 +4,7 @@
     border-top: none;
     margin-left: auto;
     margin-right: auto;
+
     .swiper {
       height: 175px;
     }
@@ -24,18 +25,14 @@
   }
 }
 
-@media screen and (min-width: 769px) {
-  .timeline-block {}
-}
-
 @media screen and (min-width: 900px) {
-  .timeline-block {}
-}
-
-@media screen and (min-width: 1181px) {
-  .timeline-block {}
-}
-
-@media screen and (min-width: 1401px) {
-  .timeline-block {}
+  .timeline-block__slider {
+    .timeline-block {
+      &__slider-nav {
+        left: -80px;
+        right: -80px;
+        bottom: -172px;
+      }
+    }
+  }
 }

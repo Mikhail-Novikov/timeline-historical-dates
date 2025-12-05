@@ -6,7 +6,7 @@ import "./TimelineBlock.scss";
 import "./TimelineBlockMobile.scss";
 
 import type { TimelinePeriod } from "@/data/timelineData";
-import { TimelineBlockSlider } from "@/components/TimelineBlockSlider/TimelineBlockSlider";
+import { TimelineBlockSlider } from "@/components/";
 
 import useYearTweens from "@/hooks/useYearTweens";
 import {
@@ -15,22 +15,42 @@ import {
 } from "@/constants/";
 import useMarkerOrbit from "@/hooks/useMarkerOrbit";
 
+// Тип для пропсов компонента
 type TimelineBlockProps = {
+  // заголовок
   title: string;
+  // массив периодов
   periods: TimelinePeriod[];
 };
 
+// Тип для точки орбиты
 type OrbitPoint = {
+  // уникальный идентификатор
   id: string;
+  // название периода
   label: string;
+  // координаты точки
   left: string;
+  // координаты точки
   top: string;
+  // угол в градусах
   angle: number;
 };
 
+// Функция для форматирования значения счетчика
 const formatCounter = (value: number) => value.toString();
 
-const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
+/**
+ * Компонент для отображения временной шкалы с периодами.
+ *
+ * @param props - объект с пропсами:
+ *   title - заголовок блока,
+ *   periods - массив периодов,
+ *   category - категория активного периода.
+ *
+ * @returns {JSX.Element} - компонент для отображения временной шкалы с периодами.
+ */
+const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }): JSX.Element => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visibleCategoryIndex, setVisibleCategoryIndex] = useState<
     number | null
@@ -208,8 +228,12 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }) => {
           </button>
         </div>
       </div>
-      
-      <TimelineBlockSlider activeIndex={activeIndex} periods={periods} category={activePeriod.category} />
+
+      <TimelineBlockSlider
+        activeIndex={activeIndex}
+        periods={periods}
+        category={activePeriod.category}
+      />
     </section>
   );
 };

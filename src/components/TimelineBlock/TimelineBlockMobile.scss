@@ -81,6 +81,8 @@
   }
 
   .timeline-block {
+    margin-top: 36px;
+
     &__title {
       font-size: 28px;
       left: 26px;
@@ -92,7 +94,7 @@
     }
 
     &__years {
-      gap: 100px;
+      gap: 82px;
     }
 
     &__year {
@@ -120,6 +122,7 @@
 
 @media screen and (min-width: 900px) {
   .timeline-block {
+
     &__title {
       font-size: 38px;
       left: 30px;
@@ -137,6 +140,7 @@
 
 @media screen and (min-width: 1181px) {
   .timeline-block {
+
     &__title {
       font-size: 50px;
 
@@ -156,8 +160,18 @@
   }
 
   .timeline-block {
+    margin-top: 44px;
+
+    &__slider-wrapper {
+      margin-top: -53px;
+    }
+
     &__title {
       font-size: 56px;
+    }
+
+    &__year {
+      font-size: 200px;
     }
   }
 }
