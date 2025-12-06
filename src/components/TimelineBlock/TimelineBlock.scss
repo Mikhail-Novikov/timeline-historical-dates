@@ -103,7 +103,7 @@
     transform: rotate(calc(-1 * var(--orbit-rotation))) !important;
   }
 
-  &__orbit-marker:not(.is-active) span {
+  &__orbit-marker:not(.is-active) &__marker-item {
     display: inline-flex;
     background-color: var(--filling);
     justify-content: center;

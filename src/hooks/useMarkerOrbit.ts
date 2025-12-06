@@ -39,7 +39,7 @@ const useMarkerOrbit = (
           scale: isActive ? 1 : 0.105,
           backgroundColor: isActive ? "#F4F5F9" : "#303E58",
           duration: 0.9,
-          ease: isActive ? "back.out(0.9)" : "power2.in",
+          ease: isActive ? "back.in(.1)" : "power2.in",
         });
       }
     });
