@@ -155,7 +155,7 @@ const TimelineBlockSlider: React.FC<TimelineBlockSliderProps> = ({
               pagination: { enabled: true, clickable: true },
               slidesOffsetBefore: 20,
             },
-            577: {
+            789: {
               slidesPerView: 2.5,
               pagination: { enabled: false },
               slidesOffsetBefore: 0,
