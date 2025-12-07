@@ -150,7 +150,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }): JSX.Element =
                 type="button"
                 className={[
                   "timeline-block__orbit-marker",
-                  index === activeIndex ? "is-active" : "",
+                  index === activeIndex ? "" : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
@@ -160,6 +160,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }): JSX.Element =
                 onClick={() => setActiveIndex(index)}
                 aria-label={`Перейти к отрезку ${point.label}`}>
                 <span
+                  className="timeline-block__marker-item"
                   ref={(el) => {
                     markerSpanRefs.current[index] = el;
                   }}>

@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 45px;
+    gap: 24px;
     height: 100%;
     width: 100%;
   }
@@ -103,7 +103,7 @@
     transform: rotate(calc(-1 * var(--orbit-rotation))) !important;
   }
 
-  &__orbit-marker:not(.is-active) span {
+  &__orbit-marker:not(.is-active) &__marker-item {
     display: inline-flex;
     background-color: var(--filling);
     justify-content: center;
@@ -174,7 +174,7 @@
 
   &__nav-group {
     display: inline-flex;
-    gap: 20px;
+    gap: 12px;
   }
 
   &__nav-button {

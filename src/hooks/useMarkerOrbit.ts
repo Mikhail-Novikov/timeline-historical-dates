@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 type OrbitPoint = { angle: number };
 
@@ -17,12 +17,11 @@ const useMarkerOrbit = (
   orbitTrackRef: React.RefObject<HTMLElement | null>,
   markerSpanRefs: React.MutableRefObject<(HTMLSpanElement | null)[]>,
   onRotationComplete?: VoidFunction
-) : void => {
+): void => {
   const markersInitializedRef = useRef(false);
   const isFirstRenderRef = useRef(true);
 
   useEffect(() => {
-    const animations: gsap.core.Tween[] = [];
 
     // Анимируем маркеры
     markerSpanRefs.current.forEach((span, index) => {
@@ -30,39 +29,18 @@ const useMarkerOrbit = (
 
       const isActive = index === activeIndex;
 
-      if (isActive) {
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 1,
-            backgroundColor: '#F4F5F9',
-            border: 'none'
-          });
-        } else {
-          const tween = gsap.to(span, {
-            scale: 1,
-            backgroundColor: '#F4F5F9',
-            border: 'none',
-            duration: 0.6,
-            ease: 'back.out(1.7)'
-          });
-          animations.push(tween);
-        }
+      if (!markersInitializedRef.current) {
+        gsap.set(span, {
+          scale: isActive ? 1 : 0.105,
+          backgroundColor: isActive ? "#F4F5F9" : "#303E58",
+        });
       } else {
-        // первая инициализация
-        if (!markersInitializedRef.current) {
-          gsap.set(span, {
-            scale: 0.105,
-            backgroundColor: '#303E58',
-          });
-        } else {
-          const tween = gsap.to(span, {
-            scale: 0.105,
-            backgroundColor: '#303E58',
-            duration: 0.6,
-            ease: 'power2.in'
-          });
-          animations.push(tween);
-        }
+        gsap.to(span, {
+          scale: isActive ? 1 : 0.105,
+          backgroundColor: isActive ? "#F4F5F9" : "#303E58",
+          duration: 0.9,
+          ease: isActive ? "back.in(.1)" : "power2.in",
+        });
       }
     });
 
@@ -77,19 +55,19 @@ const useMarkerOrbit = (
     const rotationValue = `${rotationDelta}deg`;
 
     if (isFirstRenderRef.current) {
-      gsap.set(orbitTrackRef.current, { '--orbit-rotation': rotationValue });
+      gsap.set(orbitTrackRef.current, { "--orbit-rotation": rotationValue });
       isFirstRenderRef.current = false;
       markersInitializedRef.current = true;
       onRotationComplete?.();
     } else {
       gsap.to(orbitTrackRef.current, {
-        '--orbit-rotation': rotationValue,
+        "--orbit-rotation": rotationValue,
         duration: 1.5,
-        ease: 'power2.inOut',
-        onComplete: () => onRotationComplete?.()
+        ease: "power2.inOut",
+        onComplete: () => onRotationComplete?.(),
       });
     }
   }, [activeIndex, basePoints]);
-}
+};
 
 export default useMarkerOrbit;
