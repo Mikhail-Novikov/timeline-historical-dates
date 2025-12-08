@@ -14,6 +14,7 @@ import {
   MARKER_SCALE_COEFFICIENT,
 } from "@/constants/";
 import useMarkerOrbit from "@/hooks/useMarkerOrbit";
+import { TimelineButton } from "../TimelineButton/TimelineButton";
 
 // Тип для пропсов компонента
 type TimelineBlockProps = {
@@ -145,38 +146,22 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({ periods }): JSX.Element =
           </div>
           <div className="timeline-block__orbit-track" ref={orbitTrackRef}>
             {basePoints.map((point, index) => (
-              <button
+              <TimelineButton
                 key={point.id}
-                type="button"
-                className={[
-                  "timeline-block__orbit-marker",
-                  index === activeIndex ? "" : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                style={{ left: point.left, top: point.top }}
-                onMouseEnter={() => handleMarkerHover(index, true)}
-                onMouseLeave={() => handleMarkerHover(index, false)}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Перейти к отрезку ${point.label}`}>
-                <span
-                  className="timeline-block__marker-item"
-                  ref={(el) => {
-                    markerSpanRefs.current[index] = el;
-                  }}>
-                  {point.label}
-                </span>
-                {index === activeIndex && (
-                  <span
-                    className={
-                      "timeline-block__marker-category " +
-                      (visibleCategoryIndex === index ? "is-visible" : "")
-                    }
-                    aria-hidden>
-                    {activePeriod.category}
-                  </span>
-                )}
-              </button>
+                id={point.id}
+                index={index}
+                label={point.label}
+                left={point.left}
+                top={point.top}
+                isActive={index === activeIndex}
+                isCategoryVisible={visibleCategoryIndex === index}
+                category={activePeriod.category}
+                onHover={handleMarkerHover}
+                onSelect={setActiveIndex}
+                setMarkerRef={(markerIndex, el) => {
+                  markerSpanRefs.current[markerIndex] = el;
+                }}
+              />
             ))}
           </div>
         </div>
